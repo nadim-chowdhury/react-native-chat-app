@@ -1,35 +1,73 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
-import { RTCView, mediaDevices } from "react-native-webrtc"; // Assuming WebRTC is used
+import { RTCView, mediaDevices, MediaStream } from "react-native-webrtc";
 
-const InCallScreen = ({ route, navigation }) => {
+interface InCallScreenProps {
+  route: {
+    params: {
+      phoneNumber: string;
+      callerName: string;
+    };
+  };
+  navigation: any;
+}
+
+const InCallScreen: React.FC<InCallScreenProps> = ({ route, navigation }) => {
   const { phoneNumber, callerName } = route.params;
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
 
+  useEffect(() => {
+    const getMediaStream = async () => {
+      try {
+        const stream = await mediaDevices.getUserMedia({
+          audio: true,
+          video: true,
+        });
+        setLocalStream(stream);
+      } catch (error) {
+        console.error("Error accessing media devices.", error);
+      }
+    };
+
+    getMediaStream();
+
+    return () => {
+      localStream?.getTracks().forEach((track) => track.stop());
+    };
+  }, []);
+
   const toggleAudio = () => {
-    setIsAudioEnabled(!isAudioEnabled);
-    // Implement logic to toggle audio
+    if (localStream) {
+      localStream.getAudioTracks().forEach((track) => {
+        track.enabled = !track.enabled;
+      });
+      setIsAudioEnabled(!isAudioEnabled);
+    }
   };
 
   const toggleVideo = () => {
-    setIsVideoEnabled(!isVideoEnabled);
-    // Implement logic to toggle video
+    if (localStream) {
+      localStream.getVideoTracks().forEach((track) => {
+        track.enabled = !track.enabled;
+      });
+      setIsVideoEnabled(!isVideoEnabled);
+    }
   };
 
   const handleHangUp = () => {
-    // Implement logic to hang up the call
+    localStream?.getTracks().forEach((track) => track.stop());
     console.log("Call ended");
-    // Navigate back to previous screen (or wherever needed)
     navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.remoteView}>
-        {/* Display remote video stream (if video call) */}
-        {isVideoEnabled && <RTCView streamURL={null} style={styles.video} />}
-        {/* Display remote audio stream (if audio call) */}
+        {isVideoEnabled && localStream && (
+          <RTCView streamURL={localStream.toURL()} style={styles.video} />
+        )}
         {!isVideoEnabled && (
           <Text style={styles.audioOnlyText}>Audio Call</Text>
         )}

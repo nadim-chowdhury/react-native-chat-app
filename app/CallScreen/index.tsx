@@ -1,31 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { View, Button, StyleSheet } from "react-native";
-import { RTCPeerConnection, RTCView, mediaDevices } from "react-native-webrtc";
+import { View, Button, StyleSheet, Text } from "react-native";
+import {
+  RTCPeerConnection,
+  RTCView,
+  mediaDevices,
+  MediaStream,
+  RTCSessionDescription,
+  RTCIceCandidate,
+} from "react-native-webrtc";
 import firebase from "firebase/app";
 import "firebase/database";
+import { firebaseConfig } from "@/utils/firebaseConfig";
 
-const CallScreen = () => {
-  const [localStream, setLocalStream] = useState(null);
-  const [remoteStream, setRemoteStream] = useState(null);
+const CallScreen: React.FC = () => {
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [isCalling, setIsCalling] = useState(false);
   const [callStarted, setCallStarted] = useState(false);
   const [callState, setCallState] = useState("");
 
-  let localPC;
-  let remotePC;
+  let localPC: RTCPeerConnection;
+  let remotePC: RTCPeerConnection;
 
   useEffect(() => {
     // Initialize Firebase (replace with your Firebase project config)
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      databaseURL: "YOUR_DATABASE_URL",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID",
-      measurementId: "YOUR_MEASUREMENT_ID",
-    };
 
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
@@ -37,18 +35,22 @@ const CallScreen = () => {
 
     // Set up event handlers for the peer connection
     localPC.onicecandidate = (event) => {
-      event.candidate && remotePC.addIceCandidate(event.candidate);
+      if (event.candidate) {
+        remotePC.addIceCandidate(new RTCIceCandidate(event.candidate));
+      }
     };
 
-    localPC.onaddstream = (event) => {
+    localPC.onaddstream = (event: any) => {
       setRemoteStream(event.stream);
     };
 
     remotePC.onicecandidate = (event) => {
-      event.candidate && localPC.addIceCandidate(event.candidate);
+      if (event.candidate) {
+        localPC.addIceCandidate(new RTCIceCandidate(event.candidate));
+      }
     };
 
-    remotePC.onaddstream = (event) => {
+    remotePC.onaddstream = (event: any) => {
       setRemoteStream(event.stream);
     };
 
@@ -60,28 +62,32 @@ const CallScreen = () => {
   }, []);
 
   const startCall = async () => {
-    const stream = await mediaDevices.getUserMedia({
-      audio: true,
-      video: true,
-    });
+    try {
+      const stream = await mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
 
-    stream && setLocalStream(stream);
-    localPC.addStream(stream);
+      if (stream) {
+        setLocalStream(stream);
+        localPC.addStream(stream);
 
-    // Create offer
-    localPC.createOffer().then((offer) => {
-      localPC.setLocalDescription(offer);
-      remotePC.setRemoteDescription(offer);
+        // Create offer
+        const offer = await localPC.createOffer();
+        await localPC.setLocalDescription(new RTCSessionDescription(offer));
+        await remotePC.setRemoteDescription(new RTCSessionDescription(offer));
 
-      // Create answer
-      remotePC.createAnswer().then((answer) => {
-        remotePC.setLocalDescription(answer);
-        localPC.setRemoteDescription(answer);
+        // Create answer
+        const answer = await remotePC.createAnswer();
+        await remotePC.setLocalDescription(new RTCSessionDescription(answer));
+        await localPC.setRemoteDescription(new RTCSessionDescription(answer));
         setIsCalling(true);
         setCallStarted(true);
         setCallState("Calling...");
-      });
-    });
+      }
+    } catch (error) {
+      console.error("Error starting call:", error);
+    }
   };
 
   const endCall = () => {

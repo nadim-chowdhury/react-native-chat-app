@@ -1,7 +1,33 @@
 import React from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteProp } from "@react-navigation/native";
 
-const IncomingCallScreen = ({ route, navigation }) => {
+// Define the type for the navigation stack
+type RootStackParamList = {
+  InCall: { callerName: string };
+  IncomingCall: { callerName: string };
+};
+
+// Define the props for the screen
+type IncomingCallScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "IncomingCall"
+>;
+type IncomingCallScreenRouteProp = RouteProp<
+  RootStackParamList,
+  "IncomingCall"
+>;
+
+type IncomingCallScreenProps = {
+  navigation: IncomingCallScreenNavigationProp;
+  route: IncomingCallScreenRouteProp;
+};
+
+const IncomingCallScreen: React.FC<IncomingCallScreenProps> = ({
+  route,
+  navigation,
+}) => {
   const { callerName } = route.params;
 
   const handleAccept = () => {

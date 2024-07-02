@@ -1,5 +1,3 @@
-// Example code for Firebase Authentication (already integrated in previous examples)
-
 // Sign in with Google using Firebase Authentication
 const signInWithGoogle = async () => {
   try {

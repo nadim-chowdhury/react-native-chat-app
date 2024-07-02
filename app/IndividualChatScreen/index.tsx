@@ -9,27 +9,45 @@ import {
 } from "react-native";
 import firebase from "firebase/app";
 import "firebase/firestore";
+import "firebase/auth";
 
-const IndividualChatScreen = ({ route }) => {
+type Message = {
+  id: string;
+  text: string;
+  createdAt: firebase.firestore.Timestamp;
+  senderId: string;
+  senderName: string;
+};
+
+type IndividualChatScreenProps = {
+  route: {
+    params: {
+      chatId: string;
+    };
+  };
+};
+
+const IndividualChatScreen: React.FC<IndividualChatScreenProps> = ({
+  route,
+}) => {
   const { chatId } = route.params;
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    // Load messages (replace with actual logic to fetch messages for individual chat)
     const messagesRef = firebase
       .firestore()
       .collection("individual_chats")
       .doc(chatId)
       .collection("messages")
       .orderBy("createdAt", "desc")
-      .limit(50); // Adjust limit as per your app's needs
+      .limit(50);
 
     const unsubscribe = messagesRef.onSnapshot((snapshot) => {
       const messagesArray = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      })) as Message[];
       setMessages(messagesArray.reverse());
     });
 
@@ -37,7 +55,8 @@ const IndividualChatScreen = ({ route }) => {
   }, [chatId]);
 
   const handleSend = () => {
-    // Replace with actual logic to send message
+    if (!message.trim()) return;
+
     firebase
       .firestore()
       .collection("individual_chats")
@@ -46,8 +65,8 @@ const IndividualChatScreen = ({ route }) => {
       .add({
         text: message,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        senderId: firebase.auth().currentUser.uid,
-        senderName: firebase.auth().currentUser.displayName,
+        senderId: firebase.auth().currentUser?.uid,
+        senderName: firebase.auth().currentUser?.displayName,
       })
       .then(() => {
         setMessage("");

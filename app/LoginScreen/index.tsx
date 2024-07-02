@@ -3,27 +3,27 @@ import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import firebase from "firebase/app";
 import "firebase/auth";
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log("User logged in:", user.uid);
-        // Navigate to chat screen or another screen after successful login
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error("Login error:", errorCode, errorMessage);
-        // Handle errors (e.g., display error message to user)
-      });
-  };
+  // const handleLogin = () => {
+  //   (firebase as any)
+  //     .auth()
+  //     .signInWithEmailAndPassword(email, password)
+  //     .then((userCredential: any) => {
+  //       // Signed in
+  //       const user = userCredential.user;
+  //       console.log("User logged in:", user.uid);
+  //       // Navigate to chat screen or another screen after successful login
+  //     })
+  //     .catch((error: any) => {
+  //       const errorCode = error.code;
+  //       const errorMessage = error.message;
+  //       console.error("Login error:", errorCode, errorMessage);
+  //       // Handle errors (e.g., display error message to user)
+  //     });
+  // };
 
   return (
     <View style={styles.container}>
@@ -42,7 +42,7 @@ const LoginScreen = ({ navigation }) => {
         value={password}
         onChangeText={setPassword}
       />
-      <Button title="Login" onPress={handleLogin} />
+      {/* <Button title="Login" onPress={handleLogin} /> */}
       <Button
         title="Create an account"
         onPress={() => navigation.navigate("Register")}

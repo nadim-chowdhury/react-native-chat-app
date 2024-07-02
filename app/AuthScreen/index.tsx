@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, TextInput, Button, StyleSheet } from "react-native";
 import firebase from "firebase/app";
 import "firebase/auth";
+// import {
+//   GoogleSignin,
+//   GoogleSigninButton,
+//   statusCodes,
+// } from "@react-native-google-signin/google-signin";
 
-// Initialize Firebase (replace with your Firebase project config)
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_AUTH_DOMAIN",
@@ -13,41 +17,64 @@ const firebaseConfig = {
   appId: "YOUR_APP_ID",
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+// if (!(firebase as any).apps.length) {
+//   firebase.initializeApp(firebaseConfig);
+// }
 
 const AuthScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log("Logged in:", user.uid);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error("Login error:", errorMessage);
-      });
-  };
+  // const handleLogin = () => {
+  //   (firebase as any)
+  //     .auth()
+  //     .signInWithEmailAndPassword(email, password)
+  //     .then((userCredential: any) => {
+  //       const user = userCredential.user;
+  //       console.log("Logged in:", user.uid);
+  //     })
+  //     .catch((error: any) => {
+  //       const errorCode = error.code;
+  //       const errorMessage = error.message;
+  //       console.error("Login error:", errorMessage);
+  //     });
+  // };
 
-  const handleLogout = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        console.log("Logged out");
-      })
-      .catch((error) => {
-        console.error("Logout error:", error);
-      });
-  };
+  // const handleLogout = () => {
+  //   (firebase as any)
+  //     .auth()
+  //     .signOut()
+  //     .then(() => {
+  //       console.log("Logged out");
+  //     })
+  //     .catch((error: any) => {
+  //       console.error("Logout error:", error);
+  //     });
+  // };
+
+  // const signInWithGoogle = async () => {
+  //   try {
+  //     await GoogleSignin.hasPlayServices();
+  //     const userInfo = await GoogleSignin.signIn();
+  //     const googleCredential = (
+  //       firebase as any
+  //     ).auth.GoogleAuthProvider.credential(userInfo.idToken);
+  //     const userCredential = await (firebase as any)
+  //       .auth()
+  //       .signInWithCredential(googleCredential);
+  //     console.log("Signed in with Google:", userCredential.user);
+  //   } catch (error: any) {
+  //     if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+  //       console.error("Google sign in cancelled");
+  //     } else if (error.code === statusCodes.IN_PROGRESS) {
+  //       console.error("Google sign in in progress");
+  //     } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+  //       console.error("Google play services not available or outdated");
+  //     } else {
+  //       console.error("Google sign in error:", error);
+  //     }
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
@@ -64,8 +91,14 @@ const AuthScreen = () => {
         value={password}
         onChangeText={setPassword}
       />
-      <Button title="Login" onPress={handleLogin} />
+      {/* <Button title="Login" onPress={handleLogin} />
       <Button title="Logout" onPress={handleLogout} />
+      <GoogleSigninButton
+        style={{ width: 192, height: 48 }}
+        size={GoogleSigninButton.Size.Wide}
+        color={GoogleSigninButton.Color.Dark}
+        onPress={signInWithGoogle}
+      /> */}
     </View>
   );
 };
