@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
-import { RTCView, mediaDevices, MediaStream } from "react-native-webrtc";
+// import { RTCView, mediaDevices, MediaStream } from "react-native-webrtc";
 
 interface InCallScreenProps {
   route: {
@@ -18,25 +18,25 @@ const InCallScreen: React.FC<InCallScreenProps> = ({ route, navigation }) => {
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
 
-  useEffect(() => {
-    const getMediaStream = async () => {
-      try {
-        const stream = await mediaDevices.getUserMedia({
-          audio: true,
-          video: true,
-        });
-        setLocalStream(stream);
-      } catch (error) {
-        console.error("Error accessing media devices.", error);
-      }
-    };
+  // useEffect(() => {
+  //   const getMediaStream = async () => {
+  //     try {
+  //       const stream = await mediaDevices.getUserMedia({
+  //         audio: true,
+  //         video: true,
+  //       });
+  //       setLocalStream(stream);
+  //     } catch (error) {
+  //       console.error("Error accessing media devices.", error);
+  //     }
+  //   };
 
-    getMediaStream();
+  //   getMediaStream();
 
-    return () => {
-      localStream?.getTracks().forEach((track) => track.stop());
-    };
-  }, []);
+  //   return () => {
+  //     localStream?.getTracks().forEach((track) => track.stop());
+  //   };
+  // }, []);
 
   const toggleAudio = () => {
     if (localStream) {
@@ -65,9 +65,9 @@ const InCallScreen: React.FC<InCallScreenProps> = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.remoteView}>
-        {isVideoEnabled && localStream && (
+        {/* {isVideoEnabled && localStream && (
           <RTCView streamURL={localStream.toURL()} style={styles.video} />
-        )}
+        )} */}
         {!isVideoEnabled && (
           <Text style={styles.audioOnlyText}>Audio Call</Text>
         )}

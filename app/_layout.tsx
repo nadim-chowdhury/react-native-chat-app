@@ -32,31 +32,31 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack initialRouteName="LoginScreen/index">
+      <Stack>
         {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-        <Stack.Screen name="AuthScreen/index" />
-        <Stack.Screen name="LoginScreen/index" />
-        <Stack.Screen name="RegisterScreen/index" />
-        <Stack.Screen name="AccountSettingsScreen/index" />
-        <Stack.Screen name="AppSettingsScreen/index" />
-        <Stack.Screen name="ChatScreen/index" />
-        <Stack.Screen name="ConversationsListScreen/index" />
-        <Stack.Screen name="DialerScreen/index" />
-        <Stack.Screen name="FileManagerScreen/index" />
-        <Stack.Screen name="ForgotPasswordScreen/index" />
-        <Stack.Screen name="GroupChatScreen/index" />
-        <Stack.Screen name="GroupChatScreen2/index" />
-        <Stack.Screen name="GroupDetailsScreen/index" />
-        <Stack.Screen name="GroupListScreen/index" />
-        <Stack.Screen name="CallScreen/index" />
-        <Stack.Screen name="InCallScreen/index" />
-        <Stack.Screen name="IncomingCallScreen/index" />
-        <Stack.Screen name="IndividualChatScreen/index" />
-        <Stack.Screen name="MediaGalleryScreen/index" />
-        <Stack.Screen name="MediaScreen/index" />
-        <Stack.Screen name="NotificationsScreen/index" />
-        <Stack.Screen name="ProfileSettingsScreen/index" />
-        <Stack.Screen name="SettingsScreen/index" />
+        <Stack.Screen name="AccountSettingsScreen" />
+        <Stack.Screen name="AppSettingsScreen" />
+        {/* <Stack.Screen name="AuthScreen" /> */}
+        <Stack.Screen name="ChatScreen" />
+        <Stack.Screen name="ConversationsListScreen" />
+        <Stack.Screen name="DialerScreen" />
+        <Stack.Screen name="FileManagerScreen" />
+        <Stack.Screen name="ForgotPasswordScreen" />
+        <Stack.Screen name="GroupChatScreen" />
+        <Stack.Screen name="GroupChatScreen2" />
+        <Stack.Screen name="GroupDetailsScreen" />
+        <Stack.Screen name="GroupListScreen" />
+        {/* <Stack.Screen name="CallScreen" /> */}
+        {/* <Stack.Screen name="InCallScreen" /> */}
+        <Stack.Screen name="IncomingCallScreen" />
+        <Stack.Screen name="IndividualChatScreen" />
+        <Stack.Screen name="LoginScreen" />
+        <Stack.Screen name="MediaGalleryScreen" />
+        <Stack.Screen name="MediaScreen" />
+        <Stack.Screen name="NotificationsScreen" />
+        <Stack.Screen name="ProfileSettingsScreen" />
+        <Stack.Screen name="RegisterScreen" />
+        <Stack.Screen name="SettingsScreen" />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>
